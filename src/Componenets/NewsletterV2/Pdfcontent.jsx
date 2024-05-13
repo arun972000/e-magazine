@@ -106,7 +106,6 @@ function Test() {
           showCover={true}
           onFlip={onFlip}
           flippingTime={500}
-          usePortrait={false}
         >
           {pagesMap.map((item, i) => (
             <Page key={i} pageNumber={i + 1} scale={2.0}></Page>
