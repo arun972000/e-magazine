@@ -3,6 +3,8 @@
 import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./LetterCard.css";
+import may from "/src/assets/mayv2.jpg"
+
 
 const LetterCard = () => {
 
@@ -19,7 +21,7 @@ const LetterCard = () => {
           <Card.Img
             className="LetterCard__image"
             variant="top"
-            src={"/src/assets/may.jpg"}
+            src={may}
           />
           </div>
 
@@ -39,7 +41,7 @@ const LetterCard = () => {
         <Card.Img
           className="LetterCard__image"
           variant="top"
-          src={"/src/assets/mayv2.jpg"}
+          src={may}
         />
         </div>
 
