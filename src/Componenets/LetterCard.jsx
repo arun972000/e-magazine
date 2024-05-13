@@ -4,6 +4,7 @@ import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./LetterCard.css";
 import may from "/src/assets/mayv2.jpg"
+import april from "/src/assets/may.jpg"
 
 
 const LetterCard = () => {
@@ -23,7 +24,7 @@ const LetterCard = () => {
           <Card.Img
             className="LetterCard__image"
             variant="top"
-            src={may}
+            src={april}
           />
           </div>
 
