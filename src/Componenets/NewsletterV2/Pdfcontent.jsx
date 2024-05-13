@@ -151,7 +151,7 @@ function Test() {
             />
           )}
           <a
-            href={`/src/assets/Race E-Magazine April'24.pdf`}
+            href={month=="april" ? april : may}
             style={{
               cursor: "pointer",
               textDecoration: "none",
