@@ -11,7 +11,9 @@ const LetterCard = () => {
   return (
     <>
     
-    <div className="col-lg-3 mt-3 justify-content-center">
+    <div className="col-lg-3 d-flex 
+                        align-items-center 
+                        justify-content-center mt-3">
       <Card
         className="custom-card border-0 shadow p-3 mb-5 bg-white rounded"
         style={{ width: "18rem", border: "1px solid #dee2e6" }}
@@ -31,7 +33,9 @@ const LetterCard = () => {
         </Link>
       </Card>
     </div>
-    <div className="col-lg-3 mt-3 justify-content-center">
+    <div className="col-lg-3 mt-3 d-flex 
+                        align-items-center 
+                        justify-content-center">
     <Card
       className="custom-card border-0 shadow p-3 mb-5 bg-white rounded"
       style={{ width: "18rem", border: "1px solid #dee2e6" }}
