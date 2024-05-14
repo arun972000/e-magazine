@@ -9,10 +9,10 @@ import { pdfjs, Document, Page as ReactPdfPage } from "react-pdf";
 import "./demo.css";
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { FaArrowRight, FaFilePdf } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 import pageFlipSound from "/src/assets/turnpage-99756.mp3";
 import april from "/src/assets/Race E-Magazine April'24.pdf";
-import may from "/src/assets/May.pdf";
+import may from "/src/assets/May-compressed.pdf";
 import { IoMdDownload } from "react-icons/io";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -123,6 +123,7 @@ function Test() {
           showCover={true}
           onFlip={onFlip}
           flippingTime={500}
+          renderOnlyPageLengthChange={true}
         >
           {pagesMap.map((item, i) => (
             <Page key={i} pageNumber={i + 1} scale={2.0}></Page>
