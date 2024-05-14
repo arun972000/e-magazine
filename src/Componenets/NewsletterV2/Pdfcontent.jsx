@@ -7,12 +7,13 @@ import { MdFullscreen, MdFullscreenExit } from "react-icons/md";
 import HTMLFlipBook from "react-pageflip";
 import { pdfjs, Document, Page as ReactPdfPage } from "react-pdf";
 import "./demo.css";
-import { forwardRef, useCallback, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { FaArrowRight, FaFilePdf } from "react-icons/fa";
 import pageFlipSound from "/src/assets/turnpage-99756.mp3";
-import april from "/src/assets/Race E-Magazine April'24.pdf"
-import may from "/src/assets/May.pdf"
+import april from "/src/assets/Race E-Magazine April'24.pdf";
+import may from "/src/assets/May.pdf";
+import { IoMdDownload } from "react-icons/io";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -50,12 +51,10 @@ function Test() {
     setIsFullScreen(true);
   };
 
-  
-
   const handleLoadSuccess = (pdfObject) => {
     const totalPages = pdfObject.numPages;
     setTotalPage(totalPages);
-    setPdfloading(false)
+    setPdfloading(false);
   };
 
   const exitFullscreen = () => {
@@ -89,12 +88,28 @@ function Test() {
 
   const pagesMap = new Array(totalPage).fill(0);
 
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === "ArrowRight") {
+        book.current.pageFlip().flipNext();
+      } else if (e.key === "ArrowLeft") {
+        book.current.pageFlip().flipPrev();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, []);
 
   return (
     <>
-    {pdfloading && <div className="loading-indicator" style={{height:"85vh"}}></div>}
+      {pdfloading && (
+        <div className="loading-indicator" style={{ height: "85vh" }}></div>
+      )}
       <Document
-        file={month=="april" ? april : may}
+        file={month == "april" ? april : may}
         style={{ width, height }}
         onLoadSuccess={handleLoadSuccess}
         onRender={() => {
@@ -128,15 +143,79 @@ function Test() {
                 setCurrentPage((pre) => pre - 1);
               }
             }}
-            style={{ cursor: currentPage < 2 ? "not-allowed" : "pointer" }}
+            style={{ cursor: "pointer" }}
             className="mx-2"
             size={25}
           />
+          <div>
+            <input
+              type="number"
+              min="0"
+              value={pageNumber}
+              onChange={(e) => setPageNumber(parseInt(e.target.value))}
+              onKeyDown={(e)=>{
+                if(e.key==="Enter"){
+                  const pageNumberInt = parseInt(pageNumber);
+                  if (pageNumberInt > totalPage) {
+                    book.current.pageFlip().flip(totalPage - 1);
+                  } else {
+                    book.current.pageFlip().flip(pageNumberInt - 1);
+                  }
+                }
+              }}
+              style={{ width: "50px" }}
+            />
+
+            <button
+              className="btn btn-dark p-0 px-1 m-0 mb-1"
+              style={{ borderRadius: 0 }}
+              onClick={() => {
+                const pageNumberInt = parseInt(pageNumber);
+                if (pageNumberInt > totalPage) {
+                  book.current.pageFlip().flip(totalPage - 1);
+                } else {
+                  book.current.pageFlip().flip(pageNumberInt - 1);
+                }
+              }}
+            >
+              <FaArrowRight />
+            </button>
+          </div>
           {book.current && (
-            <p style={{ backgroundColor: "black", padding: 2, color: "white" }}>
+            <p
+              className="mx-3"
+              style={{ backgroundColor: "#212529", padding: 2, color: "white" }}
+            >
               <b>{totalPage}</b>
             </p>
           )}
+          <GrFormNext
+            onClick={() => {
+              book.current.pageFlip().flipNext("top");
+              if (currentPage !== totalPage / 2) {
+                setCurrentPage((pre) => pre + 1);
+              }
+            }}
+            style={{
+              cursor: "pointer",
+            }}
+            className=""
+            size={25}
+          />
+
+          <a
+            href={month == "april" ? april : may}
+            style={{
+              cursor: "pointer",
+              textDecoration: "none",
+              color: "inherit",
+            }}
+            className="mx-2"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <IoMdDownload size={25} />
+          </a>
           {isFullScreen ? (
             <MdFullscreenExit
               onClick={toggleFullscreen}
@@ -152,78 +231,26 @@ function Test() {
               size={25}
             />
           )}
-          <a
-            href={month=="april" ? april : may}
-            style={{
-              cursor: "pointer",
-              textDecoration: "none",
-              color: "inherit",
-            }}
-            className="mx-2"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <FaFilePdf size={25} />
-          </a>
 
-          <div>
-            <input
-              type="number"
-              min="0"
-              value={pageNumber}
-              onChange={(e) => setPageNumber(parseInt(e.target.value))}
-              style={{ width: "50px" }}
-            />
-
-            <button
-              className="btn btn-dark p-0 px-1 m-0 mb-1"
-              style={{ borderRadius: 0 }}
+          {volume ? (
+            <IoVolumeMuteSharp
               onClick={() => {
-                const pageNumberInt = parseInt(pageNumber);
-                if (pageNumberInt > totalPage) {
-                  console.log(totalPage);
-                  book.current.pageFlip().flip(totalPage - 1);
-                } else {
-                  book.current.pageFlip().flip(pageNumberInt - 1);
-                }
+                setVolume(false);
               }}
-            >
-              <FaArrowRight />
-            </button>
-            {volume ? (
-              <IoVolumeMuteSharp
-                onClick={() => {
-                  setVolume(false);
-                }}
-                style={{ cursor: "pointer" }}
-                className="mx-3"
-                size={25}
-              />
-            ) : (
-              <IoVolumeHighSharp
-                onClick={() => {
-                  setVolume(true);
-                }}
-                style={{ cursor: "pointer" }}
-                className="mx-3"
-                size={25}
-              />
-            )}
-            <GrFormNext
-              onClick={() => {
-                book.current.pageFlip().flipNext("top");
-                if (currentPage !== totalPage / 2) {
-                  setCurrentPage((pre) => pre + 1);
-                }
-              }}
-              style={{
-                cursor:
-                  currentPage == totalPage / 2 ? "not-allowed" : "pointer",
-              }}
-              className="mx-2"
+              style={{ cursor: "pointer" }}
+              className="mx-3"
               size={25}
             />
-          </div>
+          ) : (
+            <IoVolumeHighSharp
+              onClick={() => {
+                setVolume(true);
+              }}
+              style={{ cursor: "pointer" }}
+              className="mx-3"
+              size={25}
+            />
+          )}
         </div>
       </div>
     </>
@@ -234,7 +261,6 @@ const PDFFinal = () => {
   return (
     <>
       <Test />
-
     </>
   );
 };
