@@ -55,6 +55,7 @@ function Test() {
   const handleLoadSuccess = (pdfObject) => {
     const totalPages = pdfObject.numPages;
     setTotalPage(totalPages);
+    setPdfloading(false)
   };
 
   const exitFullscreen = () => {
@@ -91,6 +92,7 @@ function Test() {
 
   return (
     <>
+     {pdfloading && <div className="loading-indicator" style={{height:"100vh", backgroundColor:"white"}}>Loading PDF...</div>}
       <Document
         file={month=="april" ? april : may}
         style={{ width, height }}
